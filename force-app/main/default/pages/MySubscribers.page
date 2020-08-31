@@ -1,0 +1,96 @@
+<apex:page controller="MySubscribersController" lightningStylesheets="true" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+    <apex:slds />
+    <div class="slds-scope">
+        <apex:form >
+            <apex:pageBlock title="Your referenced packages">
+                <apex:pageBlockTable value="{!packageInformations}" var="pi" rowClasses="odd,even" styleClass="tableClass">
+                    <apex:column >
+                        <apex:facet name="header">Package</apex:facet>
+                        <apex:outputText value="{!pi.pack.Name}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Version</apex:facet>
+                        <apex:outputText value="{!TEXT(pi.version.MajorVersion)+'.'+TEXT(pi.version.MinorVersion)}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Build</apex:facet>
+                        <apex:outputText value="{!pi.version.BuildNumber}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Subscriptions</apex:facet>
+                        <apex:outputText value="{!pi.numberSubscriptions}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Package Id</apex:facet>
+                        <apex:outputText value="{!pi.pack.Id}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Version Id</apex:facet>
+                        <apex:outputText value="{!pi.version.Id}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">ReleaseState</apex:facet>
+                        <apex:outputText value="{!pi.version.ReleaseState}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Deprecated</apex:facet>
+                        <apex:outputText value="{!pi.version.IsDeprecated}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Version Date</apex:facet>
+                        <apex:outputText value="{0,date,yyyy/MM/dd}">
+                            <apex:param value="{!pi.version.SystemModstamp}" />
+                        </apex:outputText>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlock>
+            <apex:pageBlock title="Subscribers that installed your packages">
+                <apex:pageBlockTable value="{!subscriptions}" var="sub" rowClasses="odd,even" styleClass="tableClass">
+                    <apex:column >
+                        <apex:facet name="header">Org Name</apex:facet>
+                        <apex:outputText value="{!sub.subscriber.OrgName}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Org Status</apex:facet>
+                        <apex:outputText value="{!sub.subscriber.OrgStatus}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Org Type</apex:facet>
+                        <apex:outputText value="{!sub.subscriber.OrgType}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Instance Name</apex:facet>
+                        <apex:outputText value="{!sub.subscriber.InstanceName}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Org Id</apex:facet>
+                        <apex:outputText escape="false" value="{!sub.subscriber.OrgKey}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Parent Org Id</apex:facet>
+                        <apex:outputText escape="false" value="{!sub.subscriber.ParentOrg}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Date</apex:facet>
+                        <apex:outputText value="{0,date,yyyy/MM/dd}">
+                            <apex:param value="{!sub.subscriber.SystemModstamp}" />
+                        </apex:outputText>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Package</apex:facet>
+                        <apex:outputText value="{!sub.packageInformation.pack.Name}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Version</apex:facet>
+                        <apex:outputText value="{!TEXT(sub.packageInformation.version.MajorVersion)+'.'+TEXT(sub.packageInformation.version.MinorVersion)}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Build</apex:facet>
+                        <apex:outputText value="{!sub.packageInformation.version.BuildNumber}"/>
+                    </apex:column>
+
+                </apex:pageBlockTable>
+            </apex:pageBlock>
+        </apex:form>
+    </div>
+</apex:page>
