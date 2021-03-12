@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MySubscribers</fullName>
     <types>
         <members>MySubscribersController</members>
         <name>ApexClass</name>
@@ -13,8 +14,8 @@
         <name>CustomTab</name>
     </types>
     <types>
-        <members>Admin</members>
-        <name>Profile</name>
+        <members>MySubscribers</members>
+        <name>PermissionSet</name>
     </types>
-    <version>49.0</version>
+    <version>51.0</version>
 </Package>
