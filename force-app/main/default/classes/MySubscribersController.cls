@@ -5,34 +5,17 @@
  */
 public class MySubscribersController {
 
-    /** 
-	 * @description Inner class to gather package / version information at once 
-	 */
-    public class PackageInformation {
+    public class MySubscribersInformations {
         public MetadataPackageVersion version { public get; private set; }
         public MetadataPackage pack { public get; private set; }
-        public Integer numberSubscriptions { public get; private set; }
+        public Boolean isLastVersion { public get; private set; }
+        public Boolean isBeta { public get; private set; }
+        public List<PackageSubscriber> subscribers { public get; private set; }
+        public String updateScript { public get; private set; }
     }
     
-    /** 
-	 * @description Inner class to gather subscription information (the subscriber 
-	 *              and the package version installed) 
-	 */
-    public class SubscriptionInformation {
-        public PackageSubscriber subscriber { public get; private set; }
-        public PackageInformation packageInformation { public get; private set; }
-    }
-    
-    /**
-     * @description Subscriptions list for Visual Force Page
-     */
-    public List<SubscriptionInformation> subscriptions { public get; private set; }
+    public List<MySubscribersInformations> information { public get; private set; }
 
-    /**
-     * @description Package/Version list for Visual Force Page
-     */
-    public List<PackageInformation> packageInformations { public get; private set; }
-    
     /** 
      * @description Constructor of the controller will set the two lists
      */
@@ -49,26 +32,41 @@ public class MySubscribersController {
             ORDER BY SystemModstamp DESC
         ];
         
-        // Get unique list of package and version Ids
+        // Get unique list of package Ids, version Ids, and subcribers by VersionId
+        Map<Id, List<PackageSubscriber>> subscribersByVersion = new Map<Id, List<PackageSubscriber>>();
         Set<Id> packageIds = new Set<Id>();
-        Set<Id> packageVersionIds = new Set<Id>();
+        Set<Id> versionIds = new Set<Id>();
         for (PackageSubscriber sub : subscribers) {
+            if (! subscribersByVersion.containsKey(sub.MetadataPackageVersionId)) {
+                subscribersByVersion.put(sub.MetadataPackageVersionId, new List<PackageSubscriber>());
+            }
+            subscribersByVersion.get(sub.MetadataPackageVersionId).add(sub);
             packageIds.add(sub.MetadataPackageId);
-            packageVersionIds.add(sub.MetadataPackageVersionId);
+            versionIds.add(sub.MetadataPackageVersionId);
         }
         
         // Selection of package version is rather long if you
         // don't specify filter. So we will only get information
         // about the package that were installed at least once 
         // by our subscribers.
-        List<MetadataPackageVersion> packageVersions = [
+        Map<Id, MetadataPackageVersion> packageVersions = new Map<Id, MetadataPackageVersion>([
             SELECT Id, Name, ReleaseState, IsDeprecated, 
                 PatchVersion, BuildNumber, MinorVersion, MajorVersion,
                 MetadataPackageId, SystemModstamp 
             FROM MetadataPackageVersion
             WHERE MetadataPackageId IN :packageIds
-            ORDER BY SystemModstamp DESC
-        ];
+            ORDER BY MajorVersion DESC,  MinorVersion DESC, PatchVersion DESC, BuildNumber DESC
+        ]);
+
+        // For each version we want to have the latest version avaible (beta or released)
+        Map<Id, MetadataPackageVersion> latestReleasedVersionByPackage = new Map<Id, MetadataPackageVersion>();
+        for (MetadataPackageVersion v : packageVersions.values()) {
+            // List 'packageVersions' is ordered by creation date descendent
+            // So need only the first version of each packages
+            if (! latestReleasedVersionByPackage.containsKey(v.MetadataPackageId) && v.ReleaseState == 'Released') {
+                latestReleasedVersionByPackage.put(v.MetadataPackageId, v);
+            }
+        }
         
         // Get information for each package, because we cannot get
         // them direclty from the version SOQL! we will do it ourselves.
@@ -78,32 +76,39 @@ public class MySubscribersController {
             WHERE Id IN :packageIds
         ]);
         
-        // Construct a map of package informations with the 
-        // package version id as key
-        Map<Id, PackageInformation> packageInformations = new Map<Id, PackageInformation>();
-        for (MetadataPackageVersion v : packageVersions) {
-            PackageInformation pi = new PackageInformation();
-            pi.version = v;
-            pi.pack = packages.get(v.MetadataPackageId);
-            pi.numberSubscriptions = 0;
-            packageInformations.put(v.Id, pi);
-        }
-        
-        // Finally start constructing the subscriptions list
-        // With subcribers info and version information
-        // Along with the list of version that are installed by 
-        // subscribers only (filter in Apex because too long in SOQL!)
-        this.subscriptions = new List<SubscriptionInformation>();
-        this.packageInformations = new List<PackageInformation>();
-        for (PackageSubscriber sub : subscribers) {
-            SubscriptionInformation si = new SubscriptionInformation();
-            si.subscriber = sub;
-            si.packageInformation = packageInformations.get(sub.MetadataPackageVersionId);
-            si.packageInformation.numberSubscriptions++;
-            if (si.packageInformation.numberSubscriptions == 1) {
-                this.packageInformations.add(si.packageInformation);
+        this.information = new List<MySubscribersInformations>();
+        for (Id versionId : versionIds) {
+            
+            MetadataPackageVersion mtdVersion = packageVersions.get(versionId);
+            Id packageId = mtdVersion.MetadataPackageId;
+            MetadataPackage mtdPackage = packages.get(packageId);
+            
+            MySubscribersInformations i = new MySubscribersInformations();
+            i.version = mtdVersion;
+            i.pack = mtdPackage;
+            i.isBeta = (mtdVersion.ReleaseState == 'Beta');
+            i.subscribers = subscribersByVersion.get(versionId);
+            if (latestReleasedVersionByPackage.containsKey(packageId)) {
+                i.isLastVersion = (latestReleasedVersionByPackage.get(packageId).Id == versionId);
+                if (i.isLastVersion == false) {
+                    i.updateScript =
+                        'sfdx force:data:record:create -u DevHub -s PackagePushRequest -v "PackageVersionId='+latestReleasedVersionByPackage.get(packageId).Id+'" --json > /tmp/out.txt <br />'+
+                        'if [[ $(grep -c \'success\": true\' /tmp/out.txt) -ne 1 ]]; then <br />'+
+                        '&nbsp;&nbsp;&nbsp;&nbsp; echo \'PackagePushRequest record not created.\' <br />'+
+                        'else <br />'+
+                        '&nbsp;&nbsp;&nbsp;&nbsp; id=$(grep \'id\": \' /tmp/out.txt | cut -d\'"\' -f4);  <br />';
+                    for (PackageSubscriber s : i.subscribers) {
+	                    i.updateScript +=
+    	                    '&nbsp;&nbsp;&nbsp;&nbsp; sfdx force:data:record:create -u DevHub -s PackagePushJob -v "PackagePushRequestId=${id} SubscriberOrganizationKey='+s.OrgKey+'"<br />';
+                    }
+                    i.updateScript +=
+                        '&nbsp;&nbsp;&nbsp;&nbsp; sfdx force:data:record:update -u DevHub -s PackagePushRequest -i ${id} -v "Status=Pending" <br />'+
+                        'fi <br />';
+            	}
+            } else {
+                i.isLastVersion = false;
             }
-            this.subscriptions.add(si);
+            this.information.add(i);
         }
     }
 }
