@@ -5,11 +5,11 @@ Visual Force Page to list all the information of your subscribers from a unlocke
 - Custom Tab: MySubscribers
 - Visual Force Page: MySubscribers
 - Apex Controller Class: MySubscribersController
-- Profile: access for Admin profile
+- Permission Set: access to page/tab/class for assigned user
 
 ## What it does...
-A page called "MySubscribers", to be installed in your dev hub, to list
-the package/version that your subscribers are using.
+- A page called "MySubscribers", to be installed in your dev hub, to list the package/version that your subscribers are using.
+- New: For older versions of the same package, the page includes a script to copy and paste into a terminal to push the new versions to subscribers.
 
 ## Deploy to Salesforce (production and developer edition)
 <a href="https://githubsfdeploy.herokuapp.com/app/githubdeploy/VinceFINET/MySubscribers?ref=master">
