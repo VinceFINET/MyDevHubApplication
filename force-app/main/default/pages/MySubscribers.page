@@ -25,6 +25,10 @@
                         <apex:outputText value="{!pi.subscribers.size}"/>
                     </apex:column>
                     <apex:column >
+                        <apex:facet name="header">Distinct prod orgs</apex:facet>
+                        <apex:outputText value="{!pi.distinctProdOrgs.size}"/>
+                    </apex:column>
+                    <apex:column >
                         <apex:facet name="header">Package Id</apex:facet>
                         <apex:outputText value="{!pi.pack.Id}"/>
                     </apex:column>
@@ -54,7 +58,6 @@
                     </apex:column>
                 </apex:pageBlockTable>
             </apex:pageBlock>
-
             <apex:repeat value="{!information}" var="pi">
                 <apex:variable var="packageVersionName" 
                                value="{!pi.pack.Name + ' ' + 
