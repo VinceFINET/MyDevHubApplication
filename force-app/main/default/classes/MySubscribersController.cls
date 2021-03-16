@@ -11,6 +11,7 @@ public class MySubscribersController {
         public Boolean isLastVersion { public get; private set; }
         public Boolean isBeta { public get; private set; }
         public List<PackageSubscriber> subscribers { public get; private set; }
+        public List<Id> distinctProdOrgs { public get; private set; }
         public String updateScript { public get; private set; }
     }
     
@@ -32,19 +33,24 @@ public class MySubscribersController {
             ORDER BY SystemModstamp DESC
         ];
         
-        // Get unique list of package Ids, version Ids, and subcribers by VersionId
-        Map<Id, List<PackageSubscriber>> subscribersByVersion = new Map<Id, List<PackageSubscriber>>();
+        // Get unique list of package Ids, version Ids, subcribers, distinct none-sandbox org id by VersionId
         Set<Id> packageIds = new Set<Id>();
         Set<Id> versionIds = new Set<Id>();
+        Map<Id, List<PackageSubscriber>> subscribersByVersion = new Map<Id, List<PackageSubscriber>>();
+        Map<Id, Set<Id>> distinctProdOrgsByVersion = new Map<Id, Set<Id>>();
         for (PackageSubscriber sub : subscribers) {
             if (! subscribersByVersion.containsKey(sub.MetadataPackageVersionId)) {
                 subscribersByVersion.put(sub.MetadataPackageVersionId, new List<PackageSubscriber>());
             }
+            if (! distinctProdOrgsByVersion.containsKey(sub.MetadataPackageVersionId)) {
+                distinctProdOrgsByVersion.put(sub.MetadataPackageVersionId, new Set<Id>());
+            }
             subscribersByVersion.get(sub.MetadataPackageVersionId).add(sub);
+            distinctProdOrgsByVersion.get(sub.MetadataPackageVersionId).add(sub.ParentOrg == null ? sub.OrgKey : sub.ParentOrg);
             packageIds.add(sub.MetadataPackageId);
             versionIds.add(sub.MetadataPackageVersionId);
         }
-        
+
         // Selection of package version is rather long if you
         // don't specify filter. So we will only get information
         // about the package that were installed at least once 
@@ -88,6 +94,7 @@ public class MySubscribersController {
             i.pack = mtdPackage;
             i.isBeta = (mtdVersion.ReleaseState == 'Beta');
             i.subscribers = subscribersByVersion.get(versionId);
+            i.distinctProdOrgs = new List<Id>(distinctProdOrgsByVersion.get(versionId));
             if (latestReleasedVersionByPackage.containsKey(packageId)) {
                 i.isLastVersion = (latestReleasedVersionByPackage.get(packageId).Id == versionId);
                 if (i.isLastVersion == false) {
