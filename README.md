@@ -1,4 +1,4 @@
-<a href="https://githubsfdeploy.herokuapp.com/app/githubdeploy/VinceFINET/MySubscribers?ref=master">
+<a href="https://githubsfdeploy.herokuapp.com/app/githubdeploy/VinceFINET/MyDevHubApplication?ref=master">
   <img alt="Deploy to Salesforce (production)" src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
 
@@ -23,6 +23,6 @@ A page called "MyCustomers"
 ![Screensho #3](/docs/MyCusts.png)
 
 ## Deploy to Salesforce (production and developer edition)
-<a href="https://githubsfdeploy.herokuapp.com/app/githubdeploy/VinceFINET/MySubscribers?ref=master">
+<a href="https://githubsfdeploy.herokuapp.com/app/githubdeploy/VinceFINET/MyDevHubApplication?ref=master">
   <img alt="Deploy to Salesforce (production)" src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
