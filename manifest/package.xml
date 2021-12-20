@@ -3,19 +3,26 @@
     <fullName>MySubscribers</fullName>
     <types>
         <members>MySubscribersController</members>
+        <members>MyCustomersController</members>
         <name>ApexClass</name>
     </types>
     <types>
         <members>MySubscribers</members>
+        <members>MyCustomers</members>
         <name>ApexPage</name>
     </types>
     <types>
         <members>MySubscribers</members>
+        <members>MyCustomers</members>
         <name>CustomTab</name>
     </types>
     <types>
-        <members>MySubscribers</members>
+        <members>MyDevHubApp</members>
+        <name>CustomApplication</name>
+    </types>
+    <types>
+        <members>MyDevHubPermissionSet</members>
         <name>PermissionSet</name>
     </types>
-    <version>51.0</version>
+    <version>53.0</version>
 </Package>

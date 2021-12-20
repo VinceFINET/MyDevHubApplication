@@ -3,8 +3,8 @@
     <apiVersion>53.0</apiVersion>
     <availableInTouch>true</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
-    <description>My Subscribers</description>
-    <label>MySubscribers</label>
+    <description>My Customers</description>
+    <label>MyCustomers</label>
     <packageVersions>
         <majorNumber>1</majorNumber>
         <minorNumber>20</minorNumber>

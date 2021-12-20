@@ -1,0 +1,47 @@
+<apex:page controller="MyCustomersController" lightningStylesheets="true" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+    <apex:variable var="colorSandbox" value="" />
+    <apex:variable var="colorProduction" value="slds-theme_success" />
+    <apex:variable var="colorTrial" value="slds-theme_warning" />
+    <apex:variable var="colorDE" value="slds-badge_inverse" />
+    <apex:variable var="colorOther" value="slds-badge_lightest" />
+    <apex:slds />
+    <div class="slds-scope">
+        Legend:
+        <ul class="slds-list_dotted">
+            <li>Production: <span class="slds-badge {!colorProduction}">OrgId (InstanceName)</span></li>
+            <li>Sandbox: <span class="slds-badge {!colorSandbox}">OrgId (InstanceName)</span></li>
+            <li>Trial: <span class="slds-badge {!colorTrial}">OrgId (InstanceName)</span></li>
+            <li>Developer Edition: <span class="slds-badge {!colorDE}">OrgId (InstanceName)</span></li>
+            <li>Other: <span class="slds-badge {!colorOther}">OrgId (InstanceName)</span></li>
+        </ul>
+        <apex:form >
+            <apex:pageBlock title="Companies">
+                <apex:pageBlockTable value="{!companies}" var="c" rowClasses="odd,even" styleClass="tableClass">
+                    <apex:column >
+                        <apex:facet name="header">Customer</apex:facet>
+                        <apex:outputText value="{!companies[c].Name}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Main Org Key</apex:facet>
+                        <apex:outputText value="{!companies[c].MainOrgKey}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">#</apex:facet>
+                        <apex:outputText value="{!companies[c].Organizations.size}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Where the package is installed</apex:facet>
+                        <apex:repeat value="{!companies[c].Organizations}" var="org">
+                            <span class="slds-badge {!CASE(org.OrgStatus + org.OrgType, 
+                                         'DemoSandbox', colorSandbox, 
+                                         'ActiveProduction', colorProduction, 
+                                         'TrialProduction', colorTrial, 
+                                         'FreeProduction', colorDE,
+                                         colorOther)}">{!org.OrgKey} ({!org.InstanceName})</span>
+                        </apex:repeat> 
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlock>
+        </apex:form>
+    </div>
+</apex:page>

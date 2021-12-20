@@ -69,7 +69,7 @@ public class MySubscribersController {
         for (MetadataPackageVersion v : packageVersions.values()) {
             // List 'packageVersions' is ordered by creation date descendent
             // So need only the first version of each packages
-            if (! latestReleasedVersionByPackage.containsKey(v.MetadataPackageId) && v.ReleaseState == 'Released') {
+            if (! latestReleasedVersionByPackage.containsKey(v.MetadataPackageId) /*&& v.ReleaseState == 'Released'*/) {
                 latestReleasedVersionByPackage.put(v.MetadataPackageId, v);
             }
         }
@@ -99,17 +99,17 @@ public class MySubscribersController {
                 i.isLastVersion = (latestReleasedVersionByPackage.get(packageId).Id == versionId);
                 if (i.isLastVersion == false) {
                     i.updateScript =
-                        'sfdx force:data:record:create -u DevHub -s PackagePushRequest -v "PackageVersionId='+latestReleasedVersionByPackage.get(packageId).Id+'" --json > /tmp/out.txt <br />'+
+                        'sfdx force:data:record:create --targetusername='+UserInfo.getUserName()+' --sobjecttype=PackagePushRequest "--values=PackageVersionId='+latestReleasedVersionByPackage.get(packageId).Id+'" --json > /tmp/out.txt <br />'+
                         'if [[ $(grep -c \'success\": true\' /tmp/out.txt) -ne 1 ]]; then <br />'+
                         '&nbsp;&nbsp;&nbsp;&nbsp; echo \'PackagePushRequest record not created.\' <br />'+
                         'else <br />'+
                         '&nbsp;&nbsp;&nbsp;&nbsp; id=$(grep \'id\": \' /tmp/out.txt | cut -d\'"\' -f4);  <br />';
                     for (PackageSubscriber s : i.subscribers) {
 	                    i.updateScript +=
-    	                    '&nbsp;&nbsp;&nbsp;&nbsp; sfdx force:data:record:create -u DevHub -s PackagePushJob -v "PackagePushRequestId=${id} SubscriberOrganizationKey='+s.OrgKey+'"<br />';
+    	                    '&nbsp;&nbsp;&nbsp;&nbsp; sfdx force:data:record:create --targetusername='+UserInfo.getUserName()+' --sobjecttype=PackagePushJob "--values=PackagePushRequestId=${id} SubscriberOrganizationKey='+s.OrgKey+'"<br />';
                     }
                     i.updateScript +=
-                        '&nbsp;&nbsp;&nbsp;&nbsp; sfdx force:data:record:update -u DevHub -s PackagePushRequest -i ${id} -v "Status=Pending" <br />'+
+                        '&nbsp;&nbsp;&nbsp;&nbsp; sfdx force:data:record:update --targetusername='+UserInfo.getUserName()+' --sobjecttype=PackagePushRequest --sobjectid=${id} "--values=Status=Pending" <br />'+
                         'fi <br />';
             	}
             } else {
