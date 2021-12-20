@@ -4,10 +4,14 @@
         <apexClass>MySubscribersController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <description>Access to MySubscribers page</description>
+    <description>Access to MySubscribers and MyCustomers pages</description>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>MySubscribers</label>
+    <label>MyDevHubPermissionSet</label>
     <license>Salesforce</license>
+    <pageAccesses>
+        <apexPage>MyCustomers</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
     <pageAccesses>
         <apexPage>MySubscribers</apexPage>
         <enabled>true</enabled>
