@@ -31,7 +31,7 @@
 ## What's inside?
 
 - 2 Custom Tab: MySubscribers and MyCustomers
-- 2 Visual Force Page: MySubscribers and MyCustomers
+- 2 Visualforce Page: MySubscribers and MyCustomers
 - 2 Apex Controller Class: MySubscribersController and MyCustomersController
 - 1 Permission Set: access to page/tab/class for assigned user
 - 1 Custom App: My DevHub Application
