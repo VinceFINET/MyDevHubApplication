@@ -33,13 +33,14 @@
 - 1 Permission Set: access to page/tab/class for assigned user
 - 1 Custom App: My DevHub Application
 
-## What it does...
+## The package-focused tab
 A page called "MySubscribers", to be installed in your dev hub, to list the package/version that your subscribers are using.
 ![Screenshot #1](/docs/MySubs.png)
 
 For older versions of the same package, the page includes a script to copy and paste into a terminal to push the new versions to subscribers.
 ![Screenshot #1](/docs/MySubs2.png)
 
+## The customer-focused tab
 A page called "MyCustomers" to list all customers and the org where your package is installed (whatever the package)
 ![Screenshot #3](/docs/MyCusts.png)
 
