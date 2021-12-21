@@ -27,6 +27,7 @@
 </a>
 
 ## What's inside?
+
 - 2 Custom Tab: MySubscribers and MyCustomers
 - 2 Visual Force Page: MySubscribers and MyCustomers
 - 2 Apex Controller Class: MySubscribersController and MyCustomersController
@@ -34,6 +35,7 @@
 - 1 Custom App: My DevHub Application
 
 ## The package-focused tab
+
 A page called "MySubscribers", to be installed in your dev hub, to list the package/version that your subscribers are using.
 ![Screenshot #1](/docs/MySubs.png)
 
@@ -41,10 +43,20 @@ For older versions of the same package, the page includes a script to copy and p
 ![Screenshot #1](/docs/MySubs2.png)
 
 ## The customer-focused tab
+
 A page called "MyCustomers" to list all customers and the org where your package is installed (whatever the package)
 ![Screenshot #3](/docs/MyCusts.png)
 
 ## Deploy to Salesforce (production and developer edition)
+
 <a href="https://githubsfdeploy.herokuapp.com/app/githubdeploy/VinceFINET/MyDevHubApplication?ref=master">
   <img alt="Deploy to Salesforce (production)" src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
+
+## Issues or new ideas?
+
+You can log any issues and new ideas in our tracker: https://github.com/VinceFINET/MyDevHubApplication/issues
+
+## License
+
+<b>My DevHub Application</b> is available under the [MIT license](LICENSE.md)
