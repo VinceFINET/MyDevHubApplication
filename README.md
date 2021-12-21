@@ -1,6 +1,6 @@
 
 <div align="center">
-  <!-- <img src="docs/assets/pngs/Logo.png" width="256" alt="My DevHub Application Logo" />-->
+  <img src="docs/mydevhubapp-icon.png" width="256" alt="My DevHub Application Logo" />
   <h1>My DevHub Application</h1>
   <p>
     <b>My DevHub Application</b> allows you to list the subscribers of your package(s) from your dev hub environment with two views: package-focused and customer-focused.
@@ -21,6 +21,8 @@
     <img alt="licenses" src="https://img.shields.io/badge/License-MIT-yellow.svg">
   </a>
 </div>
+
+## Deploy to Salesforce (production and developer edition)
 
 <a href="https://githubsfdeploy.herokuapp.com/app/githubdeploy/VinceFINET/MyDevHubApplication?ref=master">
   <img alt="Deploy to Salesforce (production)" src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
