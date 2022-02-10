@@ -100,16 +100,20 @@ public class MySubscribersController {
                 if (i.isLastVersion == false) {
                     i.updateScript =
                         'sfdx force:data:record:create --targetusername='+UserInfo.getUserName()+' --sobjecttype=PackagePushRequest "--values=PackageVersionId='+latestReleasedVersionByPackage.get(packageId).Id+'" --json > /tmp/out.txt <br />'+
-                        'if [[ $(grep -c \'success\": true\' /tmp/out.txt) -ne 1 ]]; then <br />'+
-                        '&nbsp;&nbsp;&nbsp;&nbsp; echo \'PackagePushRequest record not created.\' <br />'+
+                        'if [[ $(grep -c \'success": true\' /tmp/out.txt) -ne 1 ]]; then <br />'+
+                        '&nbsp;&nbsp; echo \'PackagePushRequest record not created.\' <br />'+
                         'else <br />'+
-                        '&nbsp;&nbsp;&nbsp;&nbsp; id=$(grep \'id\": \' /tmp/out.txt | cut -d\'"\' -f4);  <br />';
+                        '&nbsp;&nbsp; id=$(grep \'id": \' /tmp/out.txt | cut -d\'"\' -f4);  <br />'+
+                        '&nbsp;&nbsp; csvFile=/tmp/packagePushJob-${id}.csv;  <br />'+
+                        '&nbsp;&nbsp; echo "PackagePushRequestId,SubscriberOrganizationKey" > "${csvFile}"; <br />';
                     for (PackageSubscriber s : i.subscribers) {
 	                    i.updateScript +=
-    	                    '&nbsp;&nbsp;&nbsp;&nbsp; sfdx force:data:record:create --targetusername='+UserInfo.getUserName()+' --sobjecttype=PackagePushJob "--values=PackagePushRequestId=${id} SubscriberOrganizationKey='+s.OrgKey+'"<br />';
+                            '&nbsp;&nbsp; echo "${id},'+s.OrgKey+'" >> "${csvFile}"; <br />';
+    	                    //'&nbsp;&nbsp; sfdx force:data:record:create --targetusername='+UserInfo.getUserName()+' --sobjecttype=PackagePushJob "--values=PackagePushRequestId=${id} SubscriberOrganizationKey='+s.OrgKey+'"<br />';
                     }
                     i.updateScript +=
-                        '&nbsp;&nbsp;&nbsp;&nbsp; sfdx force:data:record:update --targetusername='+UserInfo.getUserName()+' --sobjecttype=PackagePushRequest --sobjectid=${id} "--values=Status=Pending" <br />'+
+                        '&nbsp;&nbsp; sfdx force:data:bulk:upsert --targetusername='+UserInfo.getUserName()+' -s PackagePushJob -f "${csvFile}" -i Id <br />'+
+                        '&nbsp;&nbsp; sfdx force:data:record:update --targetusername='+UserInfo.getUserName()+' --sobjecttype=PackagePushRequest --sobjectid=${id} "--values=Status=Pending" <br />'+
                         'fi <br />';
             	}
             } else {
