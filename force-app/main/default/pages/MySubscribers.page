@@ -1,4 +1,4 @@
-<apex:page controller="MySubscribersController" lightningStylesheets="true" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+<apex:page controller="MySubscribersController" readOnly="true" lightningStylesheets="true" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
     <script>
         window.onload = function() {
             const tabItems = document.getElementsByClassName('slds-tabs_default__item');
@@ -53,17 +53,13 @@
                         <apex:outputText value="{!pi.distinctProdOrgs.size}"/>
                         <apex:variable var="totalCountDistinctProdOrgs" value="{!totalCountDistinctProdOrgs+pi.distinctProdOrgs.size}" /> 
                     </apex:column>
-<!--                    <apex:column >
-                        <apex:facet name="header">Package Id</apex:facet>
-                        <apex:outputText value="{!pi.pack.Id}"/>
-                    </apex:column>-->
                     <apex:column >
                         <apex:facet name="header">Version Id</apex:facet>
                         <apex:outputText value="{!LEFT(pi.version.Id, 15)}"/>
                     </apex:column>
                     <apex:column >
                         <apex:facet name="header">Release State</apex:facet>
-                        <apex:outputText value="{!pi.version.ReleaseState}"/>
+                        <apex:outputText value="{!IF(pi.version.ReleaseState=='Released','🎁','🔬') + ' ' + pi.version.ReleaseState}" escape="false" />
                     </apex:column>
                     <apex:column >
                         <apex:facet name="header">Deprecated</apex:facet>
@@ -75,16 +71,10 @@
                             <apex:param value="{!pi.version.SystemModstamp}" />
                         </apex:outputText>
                     </apex:column>
-<!--                    <apex:column >
-                        <apex:facet name="header">Last Version?</apex:facet>
-                        <apex:outputText >
-                            <apex:param value="{!pi.isLastVersion}" />
-                        </apex:outputText>
-                    </apex:column>-->
                 </apex:pageBlockTable>
             </apex:pageBlock>
-            Total count of Subscribers: <b><apex:outputText value="{!totalCountSubscribers}" /></b><br />
-            Total count of Distinct Production Orgs: <b><apex:outputText value="{!totalCountDistinctProdOrgs}" /></b><br />
+            The number of Salesforce Orgs where it is installed is: <b><apex:outputText value="{!totalCountSubscribers}" /></b><br />
+            If we consider only the linked production org for the previous count, we have: <b><apex:outputText value="{!totalCountDistinctProdOrgs}" /></b><br />
             <br /><br />
 
             <div class="slds-tabs_default">
@@ -100,7 +90,7 @@
             
                         <li class="slds-tabs_default__item{!IF(isFirstItem, ' slds-is-active', '')}" title="{!packageVersionName}" role="presentation">
                             <a class="slds-tabs_default__link" href="#" role="tab" tabindex="{!IF(isFirstItem, '0', '-1')}" aria-selected="{!isFirstItem}" aria-controls="tab-default-{!packageVersionId}" id="'tab-default-{!packageVersionId}__item">
-                                {!packageVersionName}
+                                {!IF(pi.version.ReleaseState=='Released','🎁','🔬')} {!packageVersionName} ({!pi.subscribers.size} / {!pi.distinctProdOrgs.size})
                             </a>
                         </li>
                         <apex:variable var="cnt" value="{!cnt+1}" />
@@ -115,12 +105,11 @@
                                             TEXT(pi.version.MajorVersion) + '.' + TEXT(pi.version.MinorVersion) + '.' +
                                             TEXT(pi.version.PatchVersion) + '-' + TEXT(pi.version.BuildNumber)}" />
                     <div id="tab-default-{!packageVersionId}" class="slds-tabs_default__content{!IF(isFirstItem, '', ' slds-hide')}" role="tabpanel" aria-labelledby="tab-default-{!packageVersionId}__item">
-                        Name: <b>{!packageVersionName}</b>,
-                        Id: <b>{!packageVersionId}</b>, 
-                        Release State: <b>{!pi.version.ReleaseState}</b>,
-                        Is Deprecated: <b>{!pi.version.IsDeprecated}</b>,
-                        # Subscribers: <b>{!pi.subscribers.size}</b>,
-                        # Distinct Production Org: <b>{!pi.distinctProdOrgs.size}</b>
+                        The package version <b>{!packageVersionName}</b> (Id: <b>{!packageVersionId}</b>) is in 
+                        <b>{!IF(pi.version.ReleaseState=='Released','🎁','🔬')} {!pi.version.ReleaseState}</b> state
+                        and is <b>{!IF(pi.version.IsDeprecated==false,'💕 not deprecated','💔 deprecated')}</b>. <br />
+                        The number of Salesforce Orgs where it is installed is <b>{!pi.subscribers.size}</b>. 
+                        If we consider only the linked production org for the previous count, we have <b>{!pi.distinctProdOrgs.size}</b>.
                         <apex:pageBlock>
                             <apex:pageBlockTable value="{!pi.subscribers}" var="sub" rowClasses="odd,even" styleClass="tableClass">
                                 <apex:column >

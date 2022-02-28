@@ -1,4 +1,4 @@
-<apex:page controller="MyCustomersController" lightningStylesheets="true" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+<apex:page controller="MyCustomersController" readOnly="true" lightningStylesheets="true" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
     <apex:variable var="colorSandbox" value="" />
     <apex:variable var="colorProduction" value="slds-theme_success" />
     <apex:variable var="colorTrial" value="slds-theme_warning" />
