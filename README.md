@@ -1,7 +1,9 @@
 
 <div align="center">
   <img src="docs/mydevhubapp-icon.png" width="256" alt="My DevHub Application Logo" />
-  <h1>My DevHub Application</h1>
+  <h1>
+    🅜🅨 &nbsp;&nbsp; 🅓🅔🅥🅗🅤🅑 &nbsp;&nbsp; 🅐🅟🅟🅛🅘🅒🅐🅣🅘🅞🅝
+  </h1>
   <p>
     <b>My DevHub Application</b> allows you to list the subscribers of your package(s) from your dev hub environment with two views: package-focused and customer-focused.
   </p>
