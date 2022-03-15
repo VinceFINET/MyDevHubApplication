@@ -6,14 +6,6 @@
     <apex:variable var="colorOther" value="slds-badge_lightest" />
     <apex:slds />
     <div class="slds-scope">
-        Legend:
-        <ul class="slds-list_dotted">
-            <li>Production: <span class="slds-badge {!colorProduction}">OrgId (InstanceName)</span></li>
-            <li>Sandbox: <span class="slds-badge {!colorSandbox}">OrgId (InstanceName)</span></li>
-            <li>Trial: <span class="slds-badge {!colorTrial}">OrgId (InstanceName)</span></li>
-            <li>Developer Edition: <span class="slds-badge {!colorDE}">OrgId (InstanceName)</span></li>
-            <li>Other: <span class="slds-badge {!colorOther}">OrgId (InstanceName)</span></li>
-        </ul>
         <apex:form >
             <apex:pageBlock title="Companies">
                 <apex:pageBlockTable value="{!companies}" var="c" rowClasses="odd,even" styleClass="tableClass">
@@ -25,18 +17,39 @@
                         <apex:facet name="header">Main Org Key</apex:facet>
                         <apex:outputText value="{!companies[c].MainOrgKey}"/>
                     </apex:column>
-                    <apex:column >
-                        <apex:facet name="header">#</apex:facet>
+                    <apex:column style="text-align: center">
+                        <apex:facet name="header">Total #</apex:facet>
                         <apex:outputText value="{!companies[c].Organizations.size}"/>
                     </apex:column>
-                    <apex:column >
+                    <apex:column style="text-align: center">
+                        <apex:facet name="header"># Prods</apex:facet>
+                        <apex:outputPanel rendered="{!companies[c].numProdOrgs>0}" style="text-align: center;" styleClass="slds-badge {!colorProduction}">{!companies[c].numProdOrgs}</apex:outputPanel>
+                    </apex:column>
+                    <apex:column style="text-align: center">
+                        <apex:facet name="header"># Sandboxes</apex:facet>
+                        <apex:outputPanel rendered="{!companies[c].numSandboxOrgs>0}" style="text-align: center;" styleClass="slds-badge {!colorSandbox}">{!companies[c].numSandboxOrgs}</apex:outputPanel>
+                    </apex:column>
+                    <apex:column style="text-align: center">
+                        <apex:facet name="header"># Trials</apex:facet>
+                        <apex:outputPanel rendered="{!companies[c].numTrialOrgs>0}" styleClass="slds-badge {!colorTrial}">{!companies[c].numTrialOrgs}</apex:outputPanel>
+                    </apex:column>
+                    <apex:column style="text-align: center">
+                        <apex:facet name="header"># Dev Editions</apex:facet>
+                        <apex:outputPanel rendered="{!companies[c].numDevEdOrgs>0}" style="text-align: center;" styleClass="slds-badge {!colorDE}">{!companies[c].numDevEdOrgs}</apex:outputPanel>
+                    </apex:column>
+                    <apex:column style="text-align: center">
+                        <apex:facet name="header"># Other</apex:facet>
+                        <apex:outputPanel rendered="{!companies[c].numOtherOrgs>0}" style="text-align: center;" styleClass="slds-badge {!colorOther}">{!companies[c].numOtherOrgs}</apex:outputPanel>
+                    </apex:column>
+                    <apex:column>
                         <apex:facet name="header">Where the package is installed</apex:facet>
                         <apex:repeat value="{!companies[c].Organizations}" var="org">
-                            <span class="slds-badge {!CASE(org.OrgStatus + org.OrgType, 
-                                         'DemoSandbox', colorSandbox, 
-                                         'ActiveProduction', colorProduction, 
-                                         'TrialProduction', colorTrial, 
-                                         'FreeProduction', colorDE,
+                            <span class="slds-badge {!CASE(org.OrgCategory, 
+                                         Category_SANDBOX, colorSandbox, 
+                                         Category_PRODUCTION, colorProduction, 
+                                         Category_TRIAL, colorTrial, 
+                                         Category_DEMO, colorDE,
+                                         Category_OTHER, colorOther,
                                          colorOther)}">{!org.OrgKey} ({!org.InstanceName})</span>
                         </apex:repeat> 
                     </apex:column>
